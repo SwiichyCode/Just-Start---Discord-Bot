@@ -13,13 +13,27 @@ const client = new Client({
 });
 
 client.commands = new Collection();
+client.slashCommands = new Collection();
+
 const commandsPath = path.join(__dirname, "commands");
+const slashCommandsPath = path.join(__dirname, "slashCommands");
+
 const commandFiles = fs
   .readdirSync(commandsPath)
   .filter((file) => file.endsWith(".js"));
 
+const slashCommandFiles = fs
+  .readdirSync(slashCommandsPath)
+  .filter((file) => file.endsWith(".js"));
+
 for (const file of commandFiles) {
   const filePath = path.join(commandsPath, file);
+  const command = require(filePath);
+  client.commands.set(command.data.name, command);
+}
+
+for (const file of slashCommandFiles) {
+  const filePath = path.join(slashCommandsPath, file);
   const command = require(filePath);
   client.commands.set(command.data.name, command);
 }
